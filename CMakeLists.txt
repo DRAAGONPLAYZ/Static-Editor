@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(StaticEditor
-    VERSION 0.1.0
+    VERSION 1.1.0
     LANGUAGES CXX
 )
 
@@ -49,7 +49,7 @@ if(WIN32)
 endif()
 
 target_compile_definitions(StaticEditorCore PRIVATE
-    STATIC_EDITOR_VERSION="0.1.0"
+    STATIC_EDITOR_VERSION="1.1.0"
 )
 
 if(MSVC)
