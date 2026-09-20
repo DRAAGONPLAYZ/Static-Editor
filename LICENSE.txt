@@ -1,41 +1,129 @@
-CUSTOM END-USER LICENSE & DISTRIBUTION AGREEMENT
+# STATIC DEV TEAM CUSTOM LICENSE v1.0
 
-1. GRANT OF LICENSE
-Permission is hereby granted to any person obtaining a copy of this software, including 
-its source code, binary files, and associated media assets ("the Software"), to use, copy, 
-modify, merge, compile, publish, and redistribute copies of the Software free of charge.
+Copyright © 2026 Static Dev Team. All rights reserved except as expressly granted below.
 
-2. MANDATORY ATTRIBUTION (BY)
-All copies or substantial portions of the Software, including any modified versions or 
-derivative works, must retain the original copyright notice below and prominently credit 
-the original creator:
+## 1. LICENSE GRANT
 
-	Static Dev Team - Original Creator
-	Project Link/Repository: [Insert Your Website or Github Link]
+Permission is hereby granted to any person obtaining a copy of this software, including its source code, compiled binaries, and associated media assets (collectively, the “Software”), to:
 
-3. NO-PRICE / SHARE-ALIKE RESTRICTIONS
-a. Free Distribution Only: The Software, modified versions of the Software, and derivative 
-   works derived from this Software must be offered and distributed entirely FREE OF CHARGE. 
-b. Paywalls Prohibited: You may not sell, rent, lease, or place the Software or any modified 
-   version behind a paywall, subscription, or mandatory payment barrier (e.g., charging 
-   $5.00 to download the game or a modified mod version).
-c. Forced Gatekeeping Prohibited: You may not require users to complete paid actions, click 
-   through forced/interstitial ad walls, or complete paid offers as a mandatory condition 
-   to download or access the files.
+* use the Software;
+* copy the Software;
+* study and inspect the source code;
+* modify the Software;
+* compile and build modified versions;
+* publish modified versions;
+* create derivative works; and
+* redistribute the Software and permitted derivative works,
 
-4. MONETIZATION EXCEPTIONS (PERMITTED USES)
-The following monetization methods are explicitly PERMITTED provided Section 3 is respected:
-a. Content Creation: Streaming, recording gameplay videos, and monetizing those videos via 
-   platform ads or tips (e.g., YouTube, Twitch) is fully permitted.
-b. Passive Web Ads: Hosting the free download or playable game on a website containing 
-   standard, non-intrusive banner advertisements is permitted, provided the download link 
-   itself remains directly accessible and uninhibited.
+provided that all applicable terms of this License are followed.
 
-5. SHARE-ALIKE MANDATE
-If you modify, transform, or build upon the Software and redistribute it, you MUST distribute 
-your modifications under this exact same License Agreement.
+No license fee is required to exercise these rights.
 
-6. DISCLAIMER OF WARRANTY
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO 
-EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER 
-LIABILITY ARISING FROM THE USE OR HANDLING OF THE SOFTWARE.
+## 2. MANDATORY ATTRIBUTION
+
+All redistributed copies, substantial portions of the Software, modified versions, and derivative works must retain the original copyright notice and must prominently credit the original creator.
+
+The attribution must identify:
+
+**Static Dev Team — Original Creator**
+
+**Project Link/Repository:** [placeholder]
+
+Attribution must not be removed, obscured, or falsely presented as credit for another creator.
+
+## 3. FREE ACCESS REQUIREMENT
+
+### 3.1 Software Must Remain Free
+
+The Software itself must be made available to users free of charge.
+
+You may not charge users for:
+
+* downloading the Software;
+* obtaining access to the Software;
+* unlocking the Software;
+* removing artificial limitations from the Software;
+* obtaining a modified version of the Software; or
+* obtaining access to a derivative work that is otherwise subject to this License.
+
+### 3.2 Prohibited Paywalls and Mandatory Payments
+
+You may not sell, rent, lease, license for a mandatory fee, subscribe users to, or place the Software or a covered derivative work behind a mandatory payment barrier.
+
+You may not require users to:
+
+* pay a fee to download or access the Software;
+* purchase a subscription to use the Software;
+* complete a paid offer before receiving the Software;
+* watch or interact with a mandatory advertisement before downloading the Software; or
+* make any other payment as a mandatory condition of obtaining the Software.
+
+## 4. PERMITTED MONETIZATION
+
+This License does not prohibit earning money through activities surrounding the Software, provided that the Software itself remains freely accessible.
+
+Permitted activities include, but are not limited to:
+
+### 4.1 Content Creation
+
+You may create, publish, stream, record, and monetize videos or other content featuring or discussing the Software.
+
+This includes revenue from:
+
+* YouTube or similar platform advertisements;
+* Twitch or similar platform subscriptions, advertisements, or tips;
+* sponsorships;
+* donations; and
+* other platform-based creator revenue.
+
+### 4.2 Website Advertising
+
+You may host the Software on a website containing ordinary advertisements, including banner advertisements.
+
+The download or access link to the Software must remain directly available without requiring users to view, click, or interact with an advertisement.
+
+### 4.3 Optional Services
+
+You may provide optional services surrounding the Software, provided that those services are not required to obtain or use the Software.
+
+Examples may include paid support, consulting, customization services, tutorials, or other independent services.
+
+## 5. SHARE-ALIKE REQUIREMENT
+
+If you modify, transform, adapt, or build upon the Software and redistribute the resulting modified or derivative work, you must distribute that work under this exact same License Agreement.
+
+You may not replace this License with a different license for the redistributed derivative work.
+
+You must preserve the attribution requirements in Section 2.
+
+## 6. NO REMOVAL OF LICENSE RIGHTS
+
+You may not impose additional restrictions that prevent recipients from exercising the rights granted by this License.
+
+In particular, you may not take a copy of the Software that is available under this License and redistribute it in a manner that removes the recipient’s ability to use, copy, modify, or redistribute it according to this License.
+
+## 7. THIRD-PARTY COMPONENTS
+
+This License applies only to material owned or controlled by Static Dev Team.
+
+Third-party software, libraries, fonts, media, trademarks, or other materials included with or used by the Software remain subject to their respective licenses and terms.
+
+Nothing in this License grants rights to third-party material beyond what its applicable license permits.
+
+## 8. TRADEMARKS AND BRANDING
+
+This License does not grant permission to use the Static Dev Team name, logos, trademarks, or other branding in a way that falsely suggests endorsement, sponsorship, or official affiliation.
+
+Attribution required by Section 2 does not constitute endorsement by Static Dev Team.
+
+## 9. DISCLAIMER OF WARRANTY
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+IN NO EVENT SHALL STATIC DEV TEAM OR THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## 10. ACCEPTANCE
+
+By using, modifying, or redistributing the Software, you agree to comply with the terms of this License.
+
+If you do not agree to these terms, you may not exercise the permissions granted by this License.
