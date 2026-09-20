@@ -17,4 +17,6 @@ private:
     QCheckBox* m_hardwareAcceleration = nullptr;
     QComboBox* m_previewQuality = nullptr;
     QComboBox* m_exportCacheLocation = nullptr;
+    QComboBox* m_exportThreadLimit = nullptr;
+    QComboBox* m_editingThreadLimit = nullptr;
 };
