@@ -1,0 +1,25 @@
+# Static Editor
+
+# Build output
+/out/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.user
+*.user.*
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
