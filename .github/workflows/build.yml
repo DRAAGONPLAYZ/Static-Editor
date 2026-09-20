@@ -112,11 +112,11 @@ jobs:
           cmake -S . -B out/temp/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
           cmake --build out/temp/build --parallel
 
-      - name: Package portable EXE
+      - name: Package portable ZIP
         shell: msys2 {0}
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          mkdir -p "out/temp/portable"
+          mkdir -p "out/temp/portable/lib"
           cp out/temp/build/StaticEditor.exe out/temp/portable/StaticEditor.exe
 
           windeployqt.exe \
@@ -127,21 +127,22 @@ jobs:
 
           for dll in avcodec-*.dll avformat-*.dll avutil-*.dll swresample-*.dll swscale-*.dll libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll; do
             if [ -f "/mingw64/bin/$dll" ]; then
-              cp "/mingw64/bin/$dll" out/temp/portable/
+              cp "/mingw64/bin/$dll" out/temp/portable/lib/
             fi
           done
 
+          find out/temp/portable -maxdepth 1 -type f -name '*.dll' -exec mv {} out/temp/portable/lib/ \;
+
           test -f out/temp/portable/StaticEditor.exe
+          test -d out/temp/portable/lib
           mkdir -p "out/$VERSION"
 
-          powershell.exe -NoProfile -Command "Compress-Archive -Path 'out/temp/portable/*' -DestinationPath 'out/$VERSION/StaticEditor-$VERSION.zip' -Force"
-          mv "out/$VERSION/StaticEditor-$VERSION.zip" "out/$VERSION/StaticEditor-$VERSION.exe"
-
+          powershell.exe -NoProfile -Command "Compress-Archive -Path 'out/temp/portable/*' -DestinationPath 'out/$VERSION/StaticEditor-$VERSION-Windows-x64.zip' -Force"
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: StaticEditor-${{ steps.version.outputs.version }}-windows-x64
-          path: out/${{ steps.version.outputs.version }}/StaticEditor-${{ steps.version.outputs.version }}.exe
+          path: out/${{ steps.version.outputs.version }}/StaticEditor-${{ steps.version.outputs.version }}-Windows-x64.zip
 
       - name: Clean out/temp
         if: always()
