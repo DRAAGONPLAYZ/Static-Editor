@@ -120,16 +120,26 @@ jobs:
           DATA="$PACKAGE/data"
           mkdir -p "$DATA"
 
-          # Keep only shortcuts at the package root. The actual executables and
-          # all runtime DLLs live under data/.
           cp out/temp/build/StaticEditor.exe "$DATA/StaticEditor.exe"
           cp out/temp/build/StaticEditorCore.exe "$DATA/StaticEditorCore.exe"
 
+          # --no-translations is supposed to suppress translation deployment,
+          # but this MSYS2 Qt package can still return exit code 1 when its
+          # translations/catalog metadata is absent. The Qt runtime itself
+          # deploys correctly, so do not let that optional metadata failure
+          # abort packaging.
+          set +e
           windeployqt.exe \
             --release \
             --no-translations \
             --dir "$DATA" \
             "$DATA/StaticEditorCore.exe"
+          WINDEPLOYQT_EXIT=$?
+          set -e
+
+          if [ "$WINDEPLOYQT_EXIT" -ne 0 ]; then
+            echo "[WARN] windeployqt exited with code $WINDEPLOYQT_EXIT; verifying required runtime files before continuing."
+          fi
 
           # Copy MinGW/FFmpeg runtime DLLs that are not always pulled in by
           # windeployqt. Keep every runtime DLL beside the executables.
@@ -143,8 +153,6 @@ jobs:
             fi
           done
 
-          # Do not leave windeployqt's lib/ directory behind. Everything needed
-          # at runtime is intentionally flat inside data/.
           find "$DATA" -mindepth 1 -maxdepth 1 -type d -name 'lib' -prune -exec rm -rf {} +
 
           test -f "$DATA/StaticEditor.exe"
@@ -156,7 +164,6 @@ jobs:
             test -f "$DATA/$dll"
           done
 
-          # Create Windows shortcuts at the package root.
           powershell.exe -NoProfile -Command '$shell = New-Object -ComObject WScript.Shell; $s = $shell.CreateShortcut("out/temp/portable/Static Editor.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path),0"; $s.Save(); $s = $shell.CreateShortcut("out/temp/portable/Static Editor Debug.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor Debug"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path),0"; $s.Save()'
 
           test -f "$PACKAGE/Static Editor.lnk"
