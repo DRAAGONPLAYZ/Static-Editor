@@ -49,7 +49,12 @@ if(WIN32)
     )
 
     target_compile_features(StaticEditor PRIVATE cxx_std_20)
-    target_compile_options(StaticEditor PRIVATE /W4 /permissive-)
+
+    if(MSVC)
+        target_compile_options(StaticEditor PRIVATE /W4 /permissive-)
+    else()
+        target_compile_options(StaticEditor PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
 else()
     add_executable(StaticEditor ALIAS StaticEditorCore)
 endif()
