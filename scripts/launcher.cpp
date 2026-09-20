@@ -17,7 +17,7 @@ int main()
     }
 
     const std::string launcherPath(executablePath, length);
-    const std::size_t separator = launcherPath.find_last_of("\/");
+    const std::size_t separator = launcherPath.find_last_of("\\/");
 
     if (separator == std::string::npos)
     {
@@ -26,21 +26,11 @@ int main()
     }
 
     const std::string applicationDirectory = launcherPath.substr(0, separator);
-    const std::string libraryDirectory = applicationDirectory + "\lib";
-    const std::string editorPath = applicationDirectory + "\StaticEditorCore.exe";
+    const std::string editorPath = applicationDirectory + "\\StaticEditorCore.exe";
 
     std::cout << "[INFO] Application directory: " << applicationDirectory << std::endl;
-    std::cout << "[INFO] Library directory: " << libraryDirectory << std::endl;
     std::cout << "[INFO] Editor executable: " << editorPath << std::endl;
-
-    if (!SetDllDirectoryA(libraryDirectory.c_str()))
-    {
-        std::cerr << "[ERROR] Could not add lib/ to the DLL search path." << std::endl;
-        return 1;
-    }
-
-    std::cout << "[OK] Added lib/ to DLL search path" << std::endl;
-    std::cout << "[INFO] Launching StaticEditorCore.exe..." << std::endl;
+    std::cout << "[INFO] DLLs are stored beside the application executables" << std::endl;
 
     STARTUPINFOA startupInfo{};
     startupInfo.cb = sizeof(startupInfo);
