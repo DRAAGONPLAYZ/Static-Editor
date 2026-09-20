@@ -30,6 +30,8 @@ add_executable(StaticEditorCore
     scripts/logger.h
     scripts/user_directories.cpp
     scripts/user_directories.h
+    scripts/opening_screen.cpp
+    scripts/opening_screen.h
     assets/resources.qrc
 )
 
