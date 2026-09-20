@@ -2,5 +2,9 @@
     <qresource prefix="/">
         <file alias="images/icons/Icon.png">images/icons/Icon.png</file>
         <file alias="images/wallpapers/LoadWallpaper.png">images/wallpapers/LoadWallpaper.png</file>
+        <file alias="fonts/Inter-Regular.ttf">fonts/Inter/Inter_18pt-Regular.ttf</file>
+        <file alias="fonts/Inter-Medium.ttf">fonts/Inter/Inter_18pt-Medium.ttf</file>
+        <file alias="fonts/Inter-SemiBold.ttf">fonts/Inter/Inter_18pt-SemiBold.ttf</file>
+        <file alias="fonts/Inter-Bold.ttf">fonts/Inter/Inter_18pt-Bold.ttf</file>
     </qresource>
 </RCC>
