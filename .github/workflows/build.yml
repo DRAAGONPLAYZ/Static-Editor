@@ -9,34 +9,58 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install C++ / Qt / FFmpeg dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            cmake \
-            pkg-config \
-            qt6-base-dev \
-            libavcodec-dev \
-            libavformat-dev \
-            libavutil-dev \
-            libswscale-dev \
-            libswresample-dev
+          sudo apt-get install -y build-essential cmake pkg-config qt6-base-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev fuse3 patchelf
 
-      - name: Configure
-        run: cmake -S . -B out/build -DCMAKE_BUILD_TYPE=Release
+      - name: Read version
+        id: version
+        shell: bash
+        run: |
+          VERSION="$(sed -n 's/^[[:space:]]*VERSION[[:space:]]*\([0-9][0-9.]*\).*/\1/p' CMakeLists.txt | head -n1)"
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Build
-        run: cmake --build out/build --parallel
+      - name: Build to out/temp
+        run: |
+          cmake -S . -B out/temp/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build out/temp/build --parallel
+
+      - name: Package AppImage
+        shell: bash
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          mkdir -p out/temp/AppDir/usr/bin
+          cp out/temp/build/StaticEditor out/temp/AppDir/usr/bin/StaticEditor
+
+          curl -L --fail --retry 3 -o out/temp/linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x out/temp/linuxdeploy.AppImage
+
+          out/temp/linuxdeploy.AppImage \
+            --appdir out/temp/AppDir \
+            --executable out/temp/AppDir/usr/bin/StaticEditor \
+            --output appimage
+
+          mkdir -p "out/$VERSION"
+          mv StaticEditor-*.AppImage "out/$VERSION/StaticEditor-$VERSION.AppImage"
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StaticEditor-${{ steps.version.outputs.version }}-linux-x64
+          path: out/${{ steps.version.outputs.version }}/StaticEditor-${{ steps.version.outputs.version }}.AppImage
+
+      - name: Clean out/temp
+        if: always()
+        run: rm -rf out/temp
 
   windows:
     runs-on: windows-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,9 +75,54 @@ jobs:
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-qt6-base
             mingw-w64-x86_64-ffmpeg
+            mingw-w64-x86_64-p7zip
 
-      - name: Configure and build
+      - name: Read version
+        id: version
         shell: msys2 {0}
         run: |
-          cmake -S . -B out/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
-          cmake --build out/build --parallel
+          VERSION="$(sed -n 's/^[[:space:]]*VERSION[[:space:]]*\([0-9][0-9.]*\).*/\1/p' CMakeLists.txt | head -n1)"
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build to out/temp
+        shell: msys2 {0}
+        run: |
+          cmake -S . -B out/temp/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build out/temp/build --parallel
+
+      - name: Package portable EXE
+        shell: msys2 {0}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          mkdir -p "out/$VERSION/StaticEditor-$VERSION"
+
+          cp out/temp/build/StaticEditor.exe "out/$VERSION/StaticEditor-$VERSION/StaticEditor.exe"
+
+          windeployqt.exe \
+            --release \
+            --no-translations \
+            --dir "out/$VERSION/StaticEditor-$VERSION" \
+            "out/$VERSION/StaticEditor-$VERSION/StaticEditor.exe"
+
+          for dll in avcodec-*.dll avformat-*.dll avutil-*.dll swresample-*.dll swscale-*.dll libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll; do
+            if [ -f "/mingw64/bin/$dll" ]; then
+              cp "/mingw64/bin/$dll" "out/$VERSION/StaticEditor-$VERSION/"
+            fi
+          done
+
+          cd "out/$VERSION/StaticEditor-$VERSION"
+          7z a "../StaticEditor-$VERSION.zip" .
+          cd ..
+          mv "StaticEditor-$VERSION.zip" "StaticEditor-$VERSION.exe"
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StaticEditor-${{ steps.version.outputs.version }}-windows-x64
+          path: out/${{ steps.version.outputs.version }}/StaticEditor-${{ steps.version.outputs.version }}.exe
+
+      - name: Clean out/temp
+        if: always()
+        shell: msys2 {0}
+        run: rm -rf out/temp
