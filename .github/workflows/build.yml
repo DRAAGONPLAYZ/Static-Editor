@@ -195,10 +195,8 @@ jobs:
           # It resolves its own directory at runtime, so the package remains portable
           # after extraction or being moved to another drive/folder.
           cp out/temp/build/StaticEditor.exe "$PACKAGE/Static Editor.exe"
-          cp out/temp/build/StaticEditor.exe "$PACKAGE/Static Editor Debug.exe"
 
           test -f "$PACKAGE/Static Editor.exe"
-          test -f "$PACKAGE/Static Editor Debug.exe"
 
           mkdir -p "out/$VERSION"
           cp -r "$PACKAGE" "out/$VERSION/StaticEditor-$VERSION-Windows-x64"
