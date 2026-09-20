@@ -44,6 +44,10 @@ target_link_libraries(StaticEditorCore PRIVATE
     PkgConfig::FFMPEG
 )
 
+if(WIN32)
+    target_link_libraries(StaticEditorCore PRIVATE advapi32)
+endif()
+
 target_compile_definitions(StaticEditorCore PRIVATE
     STATIC_EDITOR_VERSION="0.1.0"
 )
