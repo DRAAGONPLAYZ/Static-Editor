@@ -37,22 +37,14 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           mkdir -p out/temp/AppDir/usr/bin
           cp out/temp/build/StaticEditor out/temp/AppDir/usr/bin/StaticEditor
-          cat > out/temp/AppDir/StaticEditor.desktop <<EOF
-[Desktop Entry]
-Type=Application
-Name=Static Editor
-Exec=StaticEditor
-Icon=static-editor
-Categories=AudioVideo;Video;
-EOF
-          cat > out/temp/AppDir/static-editor.desktop <<EOF
-[Desktop Entry]
-Type=Application
-Name=Static Editor
-Exec=StaticEditor
-Icon=static-editor
-Categories=AudioVideo;Video;
-EOF
+
+          printf '%s\n' \
+            '[Desktop Entry]' \
+            'Type=Application' \
+            'Name=Static Editor' \
+            'Exec=StaticEditor' \
+            'Categories=AudioVideo;Video;' \
+            > out/temp/AppDir/static-editor.desktop
 
           curl -L --fail --retry 3 -o out/temp/linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x out/temp/linuxdeploy.AppImage
@@ -60,10 +52,13 @@ EOF
           out/temp/linuxdeploy.AppImage \
             --appdir out/temp/AppDir \
             --executable out/temp/AppDir/usr/bin/StaticEditor \
+            --desktop-file out/temp/AppDir/static-editor.desktop \
             --output appimage
 
           mkdir -p "out/$VERSION"
-          mv StaticEditor-*.AppImage "out/$VERSION/StaticEditor-$VERSION.AppImage"
+          APPIMAGE="$(find . -maxdepth 1 -type f -name '*.AppImage' -print -quit)"
+          test -n "$APPIMAGE"
+          mv "$APPIMAGE" "out/$VERSION/StaticEditor-$VERSION.AppImage"
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
@@ -110,26 +105,26 @@ EOF
         shell: msys2 {0}
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          mkdir -p "out/$VERSION/StaticEditor-$VERSION"
-
-          cp out/temp/build/StaticEditor.exe "out/$VERSION/StaticEditor-$VERSION/StaticEditor.exe"
+          mkdir -p "out/temp/portable"
+          cp out/temp/build/StaticEditor.exe out/temp/portable/StaticEditor.exe
 
           windeployqt.exe \
             --release \
             --no-translations \
-            --dir "out/$VERSION/StaticEditor-$VERSION" \
-            "out/$VERSION/StaticEditor-$VERSION/StaticEditor.exe"
+            --dir out/temp/portable \
+            out/temp/portable/StaticEditor.exe
 
           for dll in avcodec-*.dll avformat-*.dll avutil-*.dll swresample-*.dll swscale-*.dll libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll; do
             if [ -f "/mingw64/bin/$dll" ]; then
-              cp "/mingw64/bin/$dll" "out/$VERSION/StaticEditor-$VERSION/"
+              cp "/mingw64/bin/$dll" out/temp/portable/
             fi
           done
 
-          cd "out/$VERSION/StaticEditor-$VERSION"
-          7z a "../StaticEditor-$VERSION.zip" .
-          cd ..
-          mv "StaticEditor-$VERSION.zip" "StaticEditor-$VERSION.exe"
+          test -f out/temp/portable/StaticEditor.exe
+          mkdir -p "out/$VERSION"
+
+          powershell.exe -NoProfile -Command "Compress-Archive -Path 'out/temp/portable/*' -DestinationPath 'out/$VERSION/StaticEditor-$VERSION.zip' -Force"
+          mv "out/$VERSION/StaticEditor-$VERSION.zip" "out/$VERSION/StaticEditor-$VERSION.exe"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
