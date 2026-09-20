@@ -9,6 +9,7 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QScrollArea>
 #include <QSizePolicy>
 #include <QTabWidget>
 #include <QVBoxLayout>
@@ -40,7 +41,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     Logger::log("[INFO] Opening Settings window");
 
     setWindowTitle("Static Editor Settings");
-    setMinimumSize(760, 620);
+    setMinimumSize(760, 500);
     resize(820, 680);
 
     setStyleSheet(
@@ -73,6 +74,26 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         "QTabBar::tab:hover {"
         " background-color: #18204A;"
         " color: #FFFFFF;"
+        "}"
+        "QScrollArea {"
+        " background-color: #0B1022;"
+        " border: none;"
+        "}"
+        "QScrollBar:vertical {"
+        " background-color: #080D1D;"
+        " width: 12px;"
+        " margin: 2px;"
+        "}"
+        "QScrollBar::handle:vertical {"
+        " background-color: #344789;"
+        " border-radius: 5px;"
+        " min-height: 30px;"
+        "}"
+        "QScrollBar::handle:vertical:hover {"
+        " background-color: #586DCC;"
+        "}"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"
+        " height: 0px;"
         "}"
         "QGroupBox {"
         " background-color: #0D1328;"
@@ -164,11 +185,11 @@ SettingsWindow::SettingsWindow(QWidget* parent)
 
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
-    mainLayout->setSpacing(16);
+    mainLayout->setSpacing(12);
 
     auto* tabs = new QTabWidget(this);
 
-    auto* performanceTab = new QWidget(tabs);
+    auto* performanceTab = new QWidget;
     auto* performanceLayout = new QVBoxLayout(performanceTab);
     performanceLayout->setContentsMargins(18, 18, 18, 18);
     performanceLayout->setSpacing(18);
@@ -297,10 +318,16 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     performanceLayout->addWidget(encodingGroup);
     performanceLayout->addWidget(previewGroup);
     performanceLayout->addWidget(cacheGroup);
-    performanceLayout->addStretch();
 
-    tabs->addTab(performanceTab, "Performance");
-    mainLayout->addWidget(tabs);
+    auto* performanceScrollArea = new QScrollArea;
+    performanceScrollArea->setWidgetResizable(true);
+    performanceScrollArea->setFrameShape(QFrame::NoFrame);
+    performanceScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    performanceScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    performanceScrollArea->setWidget(performanceTab);
+
+    tabs->addTab(performanceScrollArea, "Performance");
+    mainLayout->addWidget(tabs, 1);
 
     auto* buttons = new QDialogButtonBox(
         QDialogButtonBox::Save | QDialogButtonBox::Cancel,
