@@ -53,13 +53,17 @@ jobs:
             > out/temp/AppDir/static-editor.desktop
 
           curl -L --fail --retry 3 -o out/temp/linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -L --fail --retry 3 -o out/temp/linuxdeploy-plugin-qt-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+
           chmod +x out/temp/linuxdeploy.AppImage
+          chmod +x out/temp/linuxdeploy-plugin-qt-x86_64.AppImage
 
           out/temp/linuxdeploy.AppImage \
             --appdir out/temp/AppDir \
             --executable out/temp/AppDir/usr/bin/StaticEditor \
             --desktop-file out/temp/AppDir/static-editor.desktop \
             --icon-file out/temp/AppDir/usr/share/icons/hicolor/64x64/apps/static-editor.png \
+            --plugin qt \
             --output appimage
 
           mkdir -p "out/$VERSION"
