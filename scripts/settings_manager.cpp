@@ -188,14 +188,15 @@ QString SettingsManager::threadLimitName(int threads)
     {
         const int available = availableCpuThreads();
         const int automatic = qMax(1, (available + 1) / 2);
-        return QString("Auto (50%%) — %1 thread%2")
+        return QString("Auto (50%%) — %1 / %2 threads")
             .arg(automatic)
-            .arg(automatic == 1 ? "" : "s");
+            .arg(available);
     }
 
-    return QString("%1 thread%2")
+    return QString("%1 / %2 thread%3")
         .arg(threads)
-        .arg(threads == 1 ? "" : "s");
+        .arg(availableCpuThreads())
+        .arg(availableCpuThreads() == 1 ? "" : "s");
 }
 
 QString SettingsManager::previewQualityName(PreviewQuality quality)
