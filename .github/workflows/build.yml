@@ -131,7 +131,6 @@ jobs:
           windeployqt.exe \
             --release \
             --no-translations \
-            --no-openssl \
             --dir "$DATA" \
             "$DATA/StaticEditorCore.exe"
           WINDEPLOYQT_EXIT=$?
