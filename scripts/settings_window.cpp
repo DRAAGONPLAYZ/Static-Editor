@@ -43,6 +43,125 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     setMinimumSize(760, 620);
     resize(820, 680);
 
+    setStyleSheet(
+        "QDialog {"
+        " background-color: #070A14;"
+        " color: #F2F4FF;"
+        "}"
+        "QWidget {"
+        " color: #F2F4FF;"
+        "}"
+        "QTabWidget::pane {"
+        " background-color: #0B1022;"
+        " border: 1px solid #26356F;"
+        " border-radius: 8px;"
+        " top: -1px;"
+        "}"
+        "QTabBar::tab {"
+        " background-color: #0D132B;"
+        " color: #AEB8E8;"
+        " border: 1px solid #26356F;"
+        " border-bottom: none;"
+        " padding: 10px 22px;"
+        " min-width: 110px;"
+        "}"
+        "QTabBar::tab:selected {"
+        " background-color: #161B3A;"
+        " color: #F2F4FF;"
+        " border-top: 2px solid #7A6CFF;"
+        "}"
+        "QTabBar::tab:hover {"
+        " background-color: #18204A;"
+        " color: #FFFFFF;"
+        "}"
+        "QGroupBox {"
+        " background-color: #0D1328;"
+        " border: 1px solid #28386F;"
+        " border-radius: 8px;"
+        " margin-top: 14px;"
+        " padding: 18px 12px 12px 12px;"
+        " font-weight: 600;"
+        " color: #F2F4FF;"
+        "}"
+        "QGroupBox::title {"
+        " subcontrol-origin: margin;"
+        " left: 14px;"
+        " padding: 0 7px;"
+        " color: #BFC8FF;"
+        " background-color: #0D1328;"
+        "}"
+        "QLabel {"
+        " color: #F2F4FF;"
+        "}"
+        "QCheckBox {"
+        " color: #F2F4FF;"
+        " spacing: 9px;"
+        "}"
+        "QCheckBox::indicator {"
+        " width: 18px;"
+        " height: 18px;"
+        " border: 1px solid #5265B8;"
+        " border-radius: 4px;"
+        " background-color: #080D1D;"
+        "}"
+        "QCheckBox::indicator:hover {"
+        " border: 1px solid #7A6CFF;"
+        "}"
+        "QCheckBox::indicator:checked {"
+        " background-color: #4C45B8;"
+        " border: 1px solid #8A7CFF;"
+        "}"
+        "QComboBox {"
+        " background-color: #080D1D;"
+        " color: #F2F4FF;"
+        " border: 1px solid #344789;"
+        " border-radius: 6px;"
+        " padding: 7px 10px;"
+        " min-height: 28px;"
+        "}"
+        "QComboBox:hover {"
+        " border: 1px solid #586DCC;"
+        "}"
+        "QComboBox:focus {"
+        " border: 1px solid #8A7CFF;"
+        "}"
+        "QComboBox::drop-down {"
+        " width: 30px;"
+        " border-left: 1px solid #344789;"
+        " background-color: #111938;"
+        "}"
+        "QComboBox QAbstractItemView {"
+        " background-color: #0B1022;"
+        " color: #F2F4FF;"
+        " selection-background-color: #403A91;"
+        " selection-color: #FFFFFF;"
+        " border: 1px solid #344789;"
+        "}"
+        "QPushButton {"
+        " background-color: #101735;"
+        " color: #F2F4FF;"
+        " border: 1px solid #3546B8;"
+        " border-radius: 6px;"
+        " padding: 9px 20px;"
+        " min-width: 90px;"
+        " font-weight: 600;"
+        "}"
+        "QPushButton:hover {"
+        " background-color: #18245A;"
+        " border: 1px solid #6378E8;"
+        "}"
+        "QPushButton:pressed {"
+        " background-color: #30266B;"
+        " border: 1px solid #9B6CFF;"
+        "}"
+        "QPushButton:focus {"
+        " border: 1px solid #8A7CFF;"
+        "}"
+        "QDialogButtonBox {"
+        " background-color: transparent;"
+        "}"
+    );
+
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(16);
@@ -92,7 +211,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     );
     hardwareDescription->setWordWrap(true);
     hardwareDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    hardwareDescription->setStyleSheet("color: #B8BCE8;");
+    hardwareDescription->setStyleSheet("color: #AEB8E8;");
 
     encodingLayout->addWidget(m_hardwareAcceleration);
     encodingLayout->addWidget(hardwareDescription);
@@ -132,7 +251,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     );
     previewDescription->setWordWrap(true);
     previewDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    previewDescription->setStyleSheet("color: #B8BCE8;");
+    previewDescription->setStyleSheet("color: #AEB8E8;");
     previewLayout->addRow("", previewDescription);
 
     auto* cacheGroup = new QGroupBox("Export", performanceTab);
@@ -171,7 +290,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     );
     cacheDescription->setWordWrap(true);
     cacheDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    cacheDescription->setStyleSheet("color: #B8BCE8;");
+    cacheDescription->setStyleSheet("color: #AEB8E8;");
     cacheLayout->addRow("", cacheDescription);
 
     performanceLayout->addWidget(systemGroup);
