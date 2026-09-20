@@ -1,6 +1,8 @@
 #include <QApplication>
+#include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
+#include <QPixmap>
 
 #include "logger.h"
 
@@ -12,6 +14,10 @@ int main(int argc, char* argv[])
     Logger::log("[INFO] Creating QApplication...");
     QApplication app(argc, argv);
     Logger::log("[OK] QApplication created");
+
+    Logger::log("[INFO] Setting application icon...");
+    app.setWindowIcon(QIcon(":/images/icons/Icon.png"));
+    Logger::log("[OK] Application icon set");
 
     Logger::log("[INFO] Creating main window...");
     QMainWindow window;
@@ -25,14 +31,16 @@ int main(int argc, char* argv[])
     window.resize(1000, 650);
     Logger::log("[OK] Window size set");
 
-    Logger::log("[INFO] Creating central label...");
-    auto* label = new QLabel("Static Editor - C++ / Qt / FFmpeg", &window);
-    label->setAlignment(Qt::AlignCenter);
-    Logger::log("[OK] Central label created");
+    Logger::log("[INFO] Creating loading wallpaper...");
+    auto* wallpaper = new QLabel(&window);
+    wallpaper->setPixmap(QPixmap(":/images/wallpapers/LoadWallpaper.png"));
+    wallpaper->setScaledContents(true);
+    wallpaper->setAlignment(Qt::AlignCenter);
+    Logger::log("[OK] Loading wallpaper created");
 
-    Logger::log("[INFO] Setting central widget...");
-    window.setCentralWidget(label);
-    Logger::log("[OK] Central widget set");
+    Logger::log("[INFO] Setting loading wallpaper as central widget...");
+    window.setCentralWidget(wallpaper);
+    Logger::log("[OK] Loading wallpaper set");
 
     Logger::log("[INFO] Showing main window...");
     window.show();
