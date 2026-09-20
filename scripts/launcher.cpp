@@ -26,11 +26,13 @@ int main()
     }
 
     const std::string applicationDirectory = launcherPath.substr(0, separator);
-    const std::string editorPath = applicationDirectory + "\\StaticEditorCore.exe";
+    const std::string dataDirectory = applicationDirectory + "\\data";
+    const std::string editorPath = dataDirectory + "\\StaticEditorCore.exe";
 
-    std::cout << "[INFO] Application directory: " << applicationDirectory << std::endl;
+    std::cout << "[INFO] Package directory: " << applicationDirectory << std::endl;
+    std::cout << "[INFO] Data directory: " << dataDirectory << std::endl;
     std::cout << "[INFO] Editor executable: " << editorPath << std::endl;
-    std::cout << "[INFO] DLLs are stored beside the application executables" << std::endl;
+    std::cout << "[INFO] DLLs are stored in the data directory" << std::endl;
 
     STARTUPINFOA startupInfo{};
     startupInfo.cb = sizeof(startupInfo);
@@ -45,7 +47,7 @@ int main()
             FALSE,
             0,
             nullptr,
-            applicationDirectory.c_str(),
+            dataDirectory.c_str(),
             &startupInfo,
             &processInfo))
     {
