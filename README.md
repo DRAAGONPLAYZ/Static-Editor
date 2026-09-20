@@ -6,3 +6,6 @@ Light weight editor
 Simple design
 Stunning visuals
 And easily portable
+
+# Information
+main/assets/docs/
