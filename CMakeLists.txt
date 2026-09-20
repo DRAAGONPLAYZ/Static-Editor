@@ -24,23 +24,34 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libswresample
 )
 
-add_executable(StaticEditor
+add_executable(StaticEditorCore
     scripts/main.cpp
 )
 
-target_link_libraries(StaticEditor PRIVATE
+target_link_libraries(StaticEditorCore PRIVATE
     Qt6::Widgets
     PkgConfig::FFMPEG
 )
 
-target_compile_definitions(StaticEditor PRIVATE
+target_compile_definitions(StaticEditorCore PRIVATE
     STATIC_EDITOR_VERSION="0.1.0"
 )
 
 if(MSVC)
-    target_compile_options(StaticEditor PRIVATE /W4 /permissive-)
+    target_compile_options(StaticEditorCore PRIVATE /W4 /permissive-)
 else()
-    target_compile_options(StaticEditor PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(StaticEditorCore PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-install(TARGETS StaticEditor RUNTIME DESTINATION bin)
+if(WIN32)
+    add_executable(StaticEditor
+        scripts/launcher.cpp
+    )
+
+    target_compile_features(StaticEditor PRIVATE cxx_std_20)
+    target_compile_options(StaticEditor PRIVATE /W4 /permissive-)
+else()
+    add_executable(StaticEditor ALIAS StaticEditorCore)
+endif()
+
+install(TARGETS StaticEditorCore RUNTIME DESTINATION bin)
