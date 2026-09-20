@@ -30,6 +30,7 @@ add_executable(StaticEditorCore
     scripts/logger.h
     scripts/user_directories.cpp
     scripts/user_directories.h
+    assets/resources.qrc
 )
 
 target_link_libraries(StaticEditorCore PRIVATE
