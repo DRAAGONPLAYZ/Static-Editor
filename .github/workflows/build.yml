@@ -118,12 +118,13 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           mkdir -p "out/temp/portable/lib"
           cp out/temp/build/StaticEditor.exe out/temp/portable/StaticEditor.exe
+          cp out/temp/build/StaticEditorCore.exe out/temp/portable/StaticEditorCore.exe
 
           windeployqt.exe \
             --release \
             --no-translations \
             --dir out/temp/portable \
-            out/temp/portable/StaticEditor.exe
+            out/temp/portable/StaticEditorCore.exe
 
           for dll in avcodec-*.dll avformat-*.dll avutil-*.dll swresample-*.dll swscale-*.dll libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll; do
             if [ -f "/mingw64/bin/$dll" ]; then
@@ -134,6 +135,7 @@ jobs:
           find out/temp/portable -maxdepth 1 -type f -name '*.dll' -exec mv {} out/temp/portable/lib/ \;
 
           test -f out/temp/portable/StaticEditor.exe
+          test -f out/temp/portable/StaticEditorCore.exe
           test -d out/temp/portable/lib
           mkdir -p "out/$VERSION"
 
