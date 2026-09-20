@@ -2,8 +2,10 @@
 
 #include "logger.h"
 
+#include <QApplication>
 #include <QFont>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
