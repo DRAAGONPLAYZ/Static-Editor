@@ -116,38 +116,54 @@ jobs:
         shell: msys2 {0}
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          mkdir -p out/temp/portable
+          PACKAGE="out/temp/portable"
+          DATA="$PACKAGE/data"
+          mkdir -p "$DATA"
 
-          cp out/temp/build/StaticEditor.exe out/temp/portable/StaticEditor.exe
-          cp out/temp/build/StaticEditorCore.exe out/temp/portable/StaticEditorCore.exe
+          # Keep only shortcuts at the package root. The actual executables and
+          # all runtime DLLs live under data/.
+          cp out/temp/build/StaticEditor.exe "$DATA/StaticEditor.exe"
+          cp out/temp/build/StaticEditorCore.exe "$DATA/StaticEditorCore.exe"
 
           windeployqt.exe \
             --release \
             --no-translations \
-            --dir out/temp/portable \
-            out/temp/portable/StaticEditorCore.exe
+            --dir "$DATA" \
+            "$DATA/StaticEditorCore.exe"
 
+          # Copy MinGW/FFmpeg runtime DLLs that are not always pulled in by
+          # windeployqt. Keep every runtime DLL beside the executables.
           for dll in \
             avcodec-*.dll avformat-*.dll avutil-*.dll swresample-*.dll swscale-*.dll \
             libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll \
-            libfreetype-6.dll libharfbuzz-0.dll libpng16-16.dll libmd4c.dll; do
+            libfreetype-6.dll libharfbuzz-0.dll libpng16-16.dll libmd4c.dll \
+            zlib1.dll libb2-1.dll libdouble-conversion.dll libicuin*.dll; do
             if [ -f "/mingw64/bin/$dll" ]; then
-              cp "/mingw64/bin/$dll" out/temp/portable/
+              cp "/mingw64/bin/$dll" "$DATA/"
             fi
           done
 
-          find out/temp/portable -mindepth 1 -maxdepth 1 -type d -name 'lib' -prune -exec rm -rf {} +
-          find out/temp/portable -maxdepth 1 -type f -name '*.dll' -print >/dev/null
+          # Do not leave windeployqt's lib/ directory behind. Everything needed
+          # at runtime is intentionally flat inside data/.
+          find "$DATA" -mindepth 1 -maxdepth 1 -type d -name 'lib' -prune -exec rm -rf {} +
 
-          test -f out/temp/portable/StaticEditor.exe
-          test -f out/temp/portable/StaticEditorCore.exe
-          test -f out/temp/portable/libfreetype-6.dll
-          test -f out/temp/portable/libharfbuzz-0.dll
-          test -f out/temp/portable/libpng16-16.dll
-          test -f out/temp/portable/libmd4c.dll
+          test -f "$DATA/StaticEditor.exe"
+          test -f "$DATA/StaticEditorCore.exe"
+
+          for dll in \
+            libfreetype-6.dll libharfbuzz-0.dll libpng16-16.dll libmd4c.dll \
+            zlib1.dll libb2-1.dll libdouble-conversion.dll libicuin78.dll; do
+            test -f "$DATA/$dll"
+          done
+
+          # Create Windows shortcuts at the package root.
+          powershell.exe -NoProfile -Command '$shell = New-Object -ComObject WScript.Shell; $s = $shell.CreateShortcut("out/temp/portable/Static Editor.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path),0"; $s.Save(); $s = $shell.CreateShortcut("out/temp/portable/Static Editor Debug.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor Debug"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path),0"; $s.Save()'
+
+          test -f "$PACKAGE/Static Editor.lnk"
+          test -f "$PACKAGE/Static Editor Debug.lnk"
 
           mkdir -p "out/$VERSION"
-          cp -r out/temp/portable "out/$VERSION/StaticEditor-$VERSION-Windows-x64"
+          cp -r "$PACKAGE" "out/$VERSION/StaticEditor-$VERSION-Windows-x64"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
