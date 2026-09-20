@@ -1,0 +1,59 @@
+name: Build Static Editor
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install C++ / Qt / FFmpeg dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            qt6-base-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswscale-dev \
+            libswresample-dev
+
+      - name: Configure
+        run: cmake -S . -B out/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build out/build --parallel
+
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-qt6-base
+            mingw-w64-x86_64-ffmpeg
+
+      - name: Configure and build
+        shell: msys2 {0}
+        run: |
+          cmake -S . -B out/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build out/build --parallel
