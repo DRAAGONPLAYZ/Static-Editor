@@ -11,6 +11,8 @@ int main(int argc, char* argv[])
 
     Logger::log("[INFO] Creating QApplication...");
     QApplication app(argc, argv);
+    app.setOrganizationName("Static Dev Team");
+    app.setApplicationName("Static Editor");
     Logger::log("[OK] QApplication created");
 
     Logger::log("[INFO] Setting application icon...");
