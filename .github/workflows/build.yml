@@ -164,9 +164,21 @@ jobs:
 
           for dll in \
             libfreetype-6.dll libharfbuzz-0.dll libpng16-16.dll libmd4c.dll \
-            zlib1.dll libb2-1.dll libdouble-conversion.dll libicuin78.dll; do
-            test -f "$DATA/$dll"
+            zlib1.dll libb2-1.dll libdouble-conversion.dll; do
+            if [ ! -f "$DATA/$dll" ]; then
+              echo "[ERROR] Missing required runtime DLL: $dll"
+              exit 1
+            fi
           done
+
+          # ICU's DLL filename contains its ABI version (for example libicuin78.dll),
+          # so do not hard-code that version in the packaging check.
+          ICU_DLLS=( "$DATA"/libicuin*.dll )
+          if [ ! -f "${ICU_DLLS[0]}" ]; then
+            echo "[ERROR] Missing required ICU runtime DLL (libicuin*.dll)"
+            exit 1
+          fi
+          echo "[OK] Required Qt/MinGW runtime DLLs verified"
 
           powershell.exe -NoProfile -Command '$shell = New-Object -ComObject WScript.Shell; $s = $shell.CreateShortcut("out/temp/portable/Static Editor.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path),0"; $s.Save(); $s = $shell.CreateShortcut("out/temp/portable/Static Editor Debug.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor Debug"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path),0"; $s.Save()'
 
