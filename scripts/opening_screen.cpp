@@ -1,5 +1,7 @@
 #include "opening_screen.h"
 
+#include "settings_window.h"
+
 #include "logger.h"
 
 #include <QApplication>
@@ -96,8 +98,13 @@ OpeningScreen::OpeningScreen(QWidget* parent)
         Logger::log("[INFO] Open Project button clicked");
     });
 
-    connect(settingsButton, &QPushButton::clicked, this, [] {
+    connect(settingsButton, &QPushButton::clicked, this, [this] {
         Logger::log("[INFO] Settings button clicked");
+
+        SettingsWindow settingsWindow(this);
+        settingsWindow.exec();
+
+        Logger::log("[INFO] Settings window closed");
     });
 
     connect(exitButton, &QPushButton::clicked, this, [] {
