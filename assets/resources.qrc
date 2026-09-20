@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="images/icons/Icon.png">images/icons/Icon.png</file>
+        <file alias="images/wallpapers/LoadWallpaper.png">images/wallpapers/LoadWallpaper.png</file>
+    </qresource>
+</RCC>
