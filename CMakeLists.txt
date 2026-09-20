@@ -26,6 +26,8 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
 
 add_executable(StaticEditorCore
     scripts/main.cpp
+    scripts/user_directories.cpp
+    scripts/user_directories.h
 )
 
 target_link_libraries(StaticEditorCore PRIVATE
