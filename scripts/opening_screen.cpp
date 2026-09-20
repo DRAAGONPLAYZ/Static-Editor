@@ -25,7 +25,9 @@ OpeningScreen::OpeningScreen(QWidget* parent)
     mainLayout->setSpacing(14);
 
     auto* title = new QLabel("STATIC EDITOR", this);
-    QFont titleFont("Sans Serif", 28, QFont::Bold);
+    QFont titleFont = font();
+    titleFont.setPointSize(28);
+    titleFont.setWeight(QFont::Bold);
     title->setFont(titleFont);
     title->setAlignment(Qt::AlignCenter);
     title->setStyleSheet(
