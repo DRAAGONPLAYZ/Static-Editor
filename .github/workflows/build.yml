@@ -35,15 +35,21 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ steps.version.outputs.version }}"
+
           mkdir -p out/temp/AppDir/usr/bin
+          mkdir -p out/temp/AppDir/usr/share/icons/hicolor/64x64/apps
+
           cp out/temp/build/StaticEditor out/temp/AppDir/usr/bin/StaticEditor
+          cp assets/images/icons/Test.png out/temp/AppDir/usr/share/icons/hicolor/64x64/apps/static-editor.png
 
           printf '%s\n' \
             '[Desktop Entry]' \
             'Type=Application' \
             'Name=Static Editor' \
             'Exec=StaticEditor' \
+            'Icon=static-editor' \
             'Categories=AudioVideo;Video;' \
+            'Terminal=false' \
             > out/temp/AppDir/static-editor.desktop
 
           curl -L --fail --retry 3 -o out/temp/linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
@@ -53,6 +59,7 @@ jobs:
             --appdir out/temp/AppDir \
             --executable out/temp/AppDir/usr/bin/StaticEditor \
             --desktop-file out/temp/AppDir/static-editor.desktop \
+            --icon-file out/temp/AppDir/usr/share/icons/hicolor/64x64/apps/static-editor.png \
             --output appimage
 
           mkdir -p "out/$VERSION"
