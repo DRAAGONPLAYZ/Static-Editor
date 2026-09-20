@@ -13,13 +13,34 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 
+namespace
+{
+void populateThreadSelector(QComboBox* combo)
+{
+    combo->addItem(
+        SettingsManager::threadLimitName(0),
+        0
+    );
+
+    const int available = SettingsManager::availableCpuThreads();
+
+    for (int threads = 1; threads <= available; ++threads)
+    {
+        combo->addItem(
+            SettingsManager::threadLimitName(threads),
+            threads
+        );
+    }
+}
+}
+
 SettingsWindow::SettingsWindow(QWidget* parent)
     : QDialog(parent)
 {
     Logger::log("[INFO] Opening Settings window");
 
     setWindowTitle("Static Editor Settings");
-    setMinimumSize(620, 430);
+    setMinimumSize(620, 500);
 
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
@@ -31,6 +52,23 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     auto* performanceLayout = new QVBoxLayout(performanceTab);
     performanceLayout->setContentsMargins(18, 18, 18, 18);
     performanceLayout->setSpacing(18);
+
+    auto* systemGroup = new QGroupBox("CPU", performanceTab);
+    auto* systemLayout = new QFormLayout(systemGroup);
+
+    const QString cpuModel = SettingsManager::cpuModelName();
+    const int availableThreads = SettingsManager::availableCpuThreads();
+
+    auto* cpuModelLabel = new QLabel(cpuModel, systemGroup);
+    cpuModelLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+    auto* cpuThreadsLabel = new QLabel(
+        QString::number(availableThreads),
+        systemGroup
+    );
+
+    systemLayout->addRow("CPU model:", cpuModelLabel);
+    systemLayout->addRow("Available threads:", cpuThreadsLabel);
 
     auto* encodingGroup = new QGroupBox("Encoding", performanceTab);
     auto* encodingLayout = new QVBoxLayout(encodingGroup);
@@ -68,18 +106,22 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         static_cast<int>(SettingsManager::PreviewQuality::High)
     );
 
+    m_editingThreadLimit = new QComboBox(previewGroup);
+    populateThreadSelector(m_editingThreadLimit);
+
     previewLayout->addRow("Preview quality:", m_previewQuality);
+    previewLayout->addRow("CPU threads:", m_editingThreadLimit);
 
     auto* previewDescription = new QLabel(
-        "Controls the quality used while playing media in the timeline. "
-        "This does not change the final export quality.",
+        "Controls preview quality and the CPU thread limit used for editing and playback. "
+        "Auto uses 50% of available logical CPU threads.",
         previewGroup
     );
     previewDescription->setWordWrap(true);
     previewDescription->setStyleSheet("color: #B8BCE8;");
     previewLayout->addRow("", previewDescription);
 
-    auto* cacheGroup = new QGroupBox("Export Cache", performanceTab);
+    auto* cacheGroup = new QGroupBox("Export", performanceTab);
     auto* cacheLayout = new QFormLayout(cacheGroup);
 
     m_exportCacheLocation = new QComboBox(cacheGroup);
@@ -96,17 +138,23 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         static_cast<int>(SettingsManager::ExportCacheLocation::Disk)
     );
 
+    m_exportThreadLimit = new QComboBox(cacheGroup);
+    populateThreadSelector(m_exportThreadLimit);
+
     cacheLayout->addRow("Cache location:", m_exportCacheLocation);
+    cacheLayout->addRow("CPU threads:", m_exportThreadLimit);
 
     auto* cacheDescription = new QLabel(
         "RAM is faster but uses system memory. Disk uses storage space instead "
-        "and is better for longer exports or systems with limited RAM.",
+        "and is better for longer exports or systems with limited RAM. "
+        "Auto uses 50% of available logical CPU threads for export.",
         cacheGroup
     );
     cacheDescription->setWordWrap(true);
     cacheDescription->setStyleSheet("color: #B8BCE8;");
     cacheLayout->addRow("", cacheDescription);
 
+    performanceLayout->addWidget(systemGroup);
     performanceLayout->addWidget(encodingGroup);
     performanceLayout->addWidget(previewGroup);
     performanceLayout->addWidget(cacheGroup);
@@ -160,6 +208,24 @@ void SettingsWindow::loadSettings()
         m_exportCacheLocation->setCurrentIndex(cacheIndex);
     }
 
+    const int editingThreadIndex = m_editingThreadLimit->findData(
+        SettingsManager::editingThreadLimit()
+    );
+
+    if (editingThreadIndex >= 0)
+    {
+        m_editingThreadLimit->setCurrentIndex(editingThreadIndex);
+    }
+
+    const int exportThreadIndex = m_exportThreadLimit->findData(
+        SettingsManager::exportThreadLimit()
+    );
+
+    if (exportThreadIndex >= 0)
+    {
+        m_exportThreadLimit->setCurrentIndex(exportThreadIndex);
+    }
+
     Logger::log("[INFO] Performance settings loaded");
 }
 
@@ -179,6 +245,14 @@ void SettingsWindow::saveSettings()
         static_cast<SettingsManager::ExportCacheLocation>(
             m_exportCacheLocation->currentData().toInt()
         )
+    );
+
+    SettingsManager::setEditingThreadLimit(
+        m_editingThreadLimit->currentData().toInt()
+    );
+
+    SettingsManager::setExportThreadLimit(
+        m_exportThreadLimit->currentData().toInt()
     );
 
     Logger::log("[OK] Performance settings saved");
