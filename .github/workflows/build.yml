@@ -161,7 +161,8 @@ jobs:
             libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll \
             libfreetype-6.dll libharfbuzz-0.dll libpng16-16.dll libmd4c.dll \
             zlib1.dll libb2-1.dll libdouble-conversion.dll \
-            libpcre2-16-0.dll libzstd.dll libbz2-1.dll libbrotlidec.dll; do
+            libpcre2-16-0.dll libzstd.dll libbz2-1.dll libbrotlidec.dll \
+            libglib-2.0-0.dll libgraphite2.dll libbrotlicommon.dll; do
             if [ -f "/mingw64/bin/$dll" ]; then
               cp "/mingw64/bin/$dll" "$DATA/"
             fi
@@ -190,7 +191,7 @@ jobs:
           fi
           echo "[OK] Required Qt/MinGW runtime DLLs verified"
 
-          powershell.exe -NoProfile -Command '$shell = New-Object -ComObject WScript.Shell; $s = $shell.CreateShortcut("out/temp/portable/Static Editor.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditor.exe").Path),0"; $s.Save(); $s = $shell.CreateShortcut("out/temp/portable/Static Editor Debug.lnk"); $s.TargetPath = (Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path; $s.WorkingDirectory = (Resolve-Path "out/temp/portable/data").Path; $s.Description = "Launch Static Editor Debug"; $s.IconLocation = "$((Resolve-Path "out/temp/portable/data/StaticEditorCore.exe").Path),0"; $s.Save()'
+          powershell.exe -NoProfile -Command '$shell = New-Object -ComObject WScript.Shell; $s = $shell.CreateShortcut("out/temp/portable/Static Editor.lnk"); $s.TargetPath = ".\\data\\StaticEditor.exe"; $s.WorkingDirectory = "."; $s.Description = "Launch Static Editor"; $s.IconLocation = ".\\data\\StaticEditor.exe,0"; $s.Save(); $s = $shell.CreateShortcut("out/temp/portable/Static Editor Debug.lnk"); $s.TargetPath = ".\\data\\StaticEditorCore.exe"; $s.WorkingDirectory = "."; $s.Description = "Launch Static Editor Debug"; $s.IconLocation = ".\\data\\StaticEditorCore.exe,0"; $s.Save()'
 
           test -f "$PACKAGE/Static Editor.lnk"
           test -f "$PACKAGE/Static Editor Debug.lnk"
