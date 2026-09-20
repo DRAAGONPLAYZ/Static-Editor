@@ -39,7 +39,7 @@ jobs:
           mkdir -p out/temp/AppDir/usr/bin
           mkdir -p out/temp/AppDir/usr/share/icons/hicolor/64x64/apps
 
-          cp out/temp/build/StaticEditor out/temp/AppDir/usr/bin/StaticEditor
+          cp out/temp/build/StaticEditorCore out/temp/AppDir/usr/bin/StaticEditor
           cp assets/images/icons/Test.png out/temp/AppDir/usr/share/icons/hicolor/64x64/apps/static-editor.png
 
           printf '%s\n' \
