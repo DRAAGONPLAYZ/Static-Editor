@@ -9,7 +9,7 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QLabel>
-#include <QPushButton>
+#include <QSizePolicy>
 #include <QTabWidget>
 #include <QVBoxLayout>
 
@@ -40,7 +40,8 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     Logger::log("[INFO] Opening Settings window");
 
     setWindowTitle("Static Editor Settings");
-    setMinimumSize(620, 500);
+    setMinimumSize(760, 620);
+    resize(820, 680);
 
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
@@ -55,12 +56,17 @@ SettingsWindow::SettingsWindow(QWidget* parent)
 
     auto* systemGroup = new QGroupBox("CPU", performanceTab);
     auto* systemLayout = new QFormLayout(systemGroup);
+    systemLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    systemLayout->setHorizontalSpacing(18);
+    systemLayout->setVerticalSpacing(10);
 
     const QString cpuModel = SettingsManager::cpuModelName();
     const int availableThreads = SettingsManager::availableCpuThreads();
 
     auto* cpuModelLabel = new QLabel(cpuModel, systemGroup);
     cpuModelLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    cpuModelLabel->setWordWrap(true);
+    cpuModelLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     auto* cpuThreadsLabel = new QLabel(
         QString::number(availableThreads),
@@ -72,6 +78,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
 
     auto* encodingGroup = new QGroupBox("Encoding", performanceTab);
     auto* encodingLayout = new QVBoxLayout(encodingGroup);
+    encodingLayout->setSpacing(8);
 
     m_hardwareAcceleration = new QCheckBox(
         "Use hardware-accelerated encoding",
@@ -84,6 +91,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         encodingGroup
     );
     hardwareDescription->setWordWrap(true);
+    hardwareDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     hardwareDescription->setStyleSheet("color: #B8BCE8;");
 
     encodingLayout->addWidget(m_hardwareAcceleration);
@@ -91,8 +99,12 @@ SettingsWindow::SettingsWindow(QWidget* parent)
 
     auto* previewGroup = new QGroupBox("Timeline Preview", performanceTab);
     auto* previewLayout = new QFormLayout(previewGroup);
+    previewLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    previewLayout->setHorizontalSpacing(18);
+    previewLayout->setVerticalSpacing(10);
 
     m_previewQuality = new QComboBox(previewGroup);
+    m_previewQuality->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_previewQuality->addItem(
         SettingsManager::previewQualityName(SettingsManager::PreviewQuality::Low),
         static_cast<int>(SettingsManager::PreviewQuality::Low)
@@ -107,6 +119,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     );
 
     m_editingThreadLimit = new QComboBox(previewGroup);
+    m_editingThreadLimit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     populateThreadSelector(m_editingThreadLimit);
 
     previewLayout->addRow("Preview quality:", m_previewQuality);
@@ -118,13 +131,18 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         previewGroup
     );
     previewDescription->setWordWrap(true);
+    previewDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     previewDescription->setStyleSheet("color: #B8BCE8;");
     previewLayout->addRow("", previewDescription);
 
     auto* cacheGroup = new QGroupBox("Export", performanceTab);
     auto* cacheLayout = new QFormLayout(cacheGroup);
+    cacheLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    cacheLayout->setHorizontalSpacing(18);
+    cacheLayout->setVerticalSpacing(10);
 
     m_exportCacheLocation = new QComboBox(cacheGroup);
+    m_exportCacheLocation->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_exportCacheLocation->addItem(
         SettingsManager::exportCacheLocationName(
             SettingsManager::ExportCacheLocation::RAM
@@ -139,6 +157,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
     );
 
     m_exportThreadLimit = new QComboBox(cacheGroup);
+    m_exportThreadLimit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     populateThreadSelector(m_exportThreadLimit);
 
     cacheLayout->addRow("Cache location:", m_exportCacheLocation);
@@ -151,6 +170,7 @@ SettingsWindow::SettingsWindow(QWidget* parent)
         cacheGroup
     );
     cacheDescription->setWordWrap(true);
+    cacheDescription->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     cacheDescription->setStyleSheet("color: #B8BCE8;");
     cacheLayout->addRow("", cacheDescription);
 
