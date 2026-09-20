@@ -123,23 +123,28 @@ jobs:
           cp out/temp/build/StaticEditor.exe "$DATA/StaticEditor.exe"
           cp out/temp/build/StaticEditorCore.exe "$DATA/StaticEditorCore.exe"
 
-          # --no-translations is supposed to suppress translation deployment,
-          # but this MSYS2 Qt package can still return exit code 1 when its
-          # translations/catalog metadata is absent. The Qt runtime itself
-          # deploys correctly, so do not let that optional metadata failure
-          # abort packaging.
+          # windeployqt can return a non-zero status when optional Qt metadata
+          # such as translations/catalogs is unavailable, even after it has
+          # successfully deployed the runtime and required plugins. Treat
+          # that status as a warning and validate the files we actually need.
           set +e
           windeployqt.exe \
             --release \
             --no-translations \
+            --no-openssl \
             --dir "$DATA" \
             "$DATA/StaticEditorCore.exe"
           WINDEPLOYQT_EXIT=$?
           set -e
 
           if [ "$WINDEPLOYQT_EXIT" -ne 0 ]; then
-            echo "[WARN] windeployqt exited with code $WINDEPLOYQT_EXIT; verifying required runtime files before continuing."
+            echo "[WARN] windeployqt exited with code $WINDEPLOYQT_EXIT; continuing because optional deployment metadata is not required."
           fi
+
+          test -f "$DATA/Qt6Core.dll"
+          test -f "$DATA/Qt6Gui.dll"
+          test -f "$DATA/Qt6Widgets.dll"
+          test -f "$DATA/platforms/qwindows.dll"
 
           # Copy MinGW/FFmpeg runtime DLLs that are not always pulled in by
           # windeployqt. Keep every runtime DLL beside the executables.
