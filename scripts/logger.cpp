@@ -54,7 +54,7 @@ bool Logger::initialize()
     return true;
 }
 
-void Logger::write(const QString& message)
+void Logger::log(const QString& message)
 {
     const QString directory = UserDirectories::logs();
     QDir logDirectory(directory);
@@ -83,5 +83,5 @@ void Logger::write(const QString& message)
 
 void Logger::shutdown()
 {
-    write("[END] Static Editor");
+    log("[END] Static Editor");
 }
