@@ -1,5 +1,6 @@
 #include "opening_screen.h"
 
+#include "editor_screen.h"
 #include "settings_window.h"
 
 #include "logger.h"
@@ -8,6 +9,7 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMainWindow>
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -92,12 +94,25 @@ OpeningScreen::OpeningScreen(QWidget* parent)
         buttonLayout->addWidget(button);
     }
 
-    connect(newProjectButton, &QPushButton::clicked, this, [] {
+    connect(newProjectButton, &QPushButton::clicked, this, [this] {
         Logger::log("[INFO] New Project button clicked");
+
+        auto* mainWindow = qobject_cast<QMainWindow*>(window());
+
+        if (mainWindow == nullptr)
+        {
+            Logger::log("[ERROR] Could not locate main window for editor transition");
+            return;
+        }
+
+        Logger::log("[INFO] Opening temporary project in mock editor...");
+        mainWindow->setCentralWidget(new EditorScreen(mainWindow));
+        mainWindow->setWindowTitle("Static Editor — Temporary Project");
+        Logger::log("[OK] Mock editor opened");
     });
 
     connect(openProjectButton, &QPushButton::clicked, this, [] {
-        Logger::log("[INFO] Open Project button clicked");
+        Logger::log("[INFO] Open Project button clicked (mock)");
     });
 
     connect(settingsButton, &QPushButton::clicked, this, [this] {
