@@ -49,6 +49,8 @@ else()
         libswscale
         libswresample
     )
+
+    add_library(FFMPEG::FFMPEG ALIAS PkgConfig::FFMPEG)
 endif()
 
 add_executable(StaticEditorCore
