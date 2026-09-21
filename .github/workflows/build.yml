@@ -109,6 +109,12 @@ jobs:
       - name: Build to out/temp
         shell: msys2 {0}
         run: |
+          # MSYS2's MinGW pkg-config does not always include the MinGW pkgconfig
+          # directory automatically. FFmpeg installs its .pc files there.
+          export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig" 
+          if [ -n "${PKG_CONFIG_PATH:-}" ]; then export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:${PKG_CONFIG_PATH}"; fi
+          pkg-config --modversion libavcodec libavformat libavutil libswscale libswresample
+
           cmake -S . -B out/temp/build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
           cmake --build out/temp/build --parallel
 
