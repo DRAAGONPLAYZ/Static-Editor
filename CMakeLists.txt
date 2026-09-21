@@ -14,15 +14,42 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
-find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
-    libavcodec
-    libavformat
-    libavutil
-    libswscale
-    libswresample
-)
+if(WIN32)
+    set(FFMPEG_ROOT "$ENV{MINGW_PREFIX}")
+
+    find_path(FFMPEG_INCLUDE_DIR
+        NAMES libavcodec/avcodec.h
+        PATHS "${FFMPEG_ROOT}/include"
+        REQUIRED
+    )
+
+    find_library(AVCODEC_LIBRARY NAMES avcodec PATHS "${FFMPEG_ROOT}/lib" REQUIRED)
+    find_library(AVFORMAT_LIBRARY NAMES avformat PATHS "${FFMPEG_ROOT}/lib" REQUIRED)
+    find_library(AVUTIL_LIBRARY NAMES avutil PATHS "${FFMPEG_ROOT}/lib" REQUIRED)
+    find_library(SWSCALE_LIBRARY NAMES swscale PATHS "${FFMPEG_ROOT}/lib" REQUIRED)
+    find_library(SWRESAMPLE_LIBRARY NAMES swresample PATHS "${FFMPEG_ROOT}/lib" REQUIRED)
+
+    add_library(FFMPEG::FFMPEG INTERFACE IMPORTED)
+    target_include_directories(FFMPEG::FFMPEG INTERFACE "${FFMPEG_INCLUDE_DIR}")
+    target_link_libraries(FFMPEG::FFMPEG INTERFACE
+        "${AVCODEC_LIBRARY}"
+        "${AVFORMAT_LIBRARY}"
+        "${AVUTIL_LIBRARY}"
+        "${SWSCALE_LIBRARY}"
+        "${SWRESAMPLE_LIBRARY}"
+    )
+else()
+    find_package(PkgConfig REQUIRED)
+
+    pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
+        libavcodec
+        libavformat
+        libavutil
+        libswscale
+        libswresample
+    )
+endif()
 
 add_executable(StaticEditorCore
     scripts/main.cpp
@@ -43,7 +70,7 @@ add_executable(StaticEditorCore
 
 target_link_libraries(StaticEditorCore PRIVATE
     Qt6::Widgets
-    PkgConfig::FFMPEG
+    FFMPEG::FFMPEG
 )
 
 if(WIN32)
