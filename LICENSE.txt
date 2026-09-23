@@ -27,7 +27,7 @@ The attribution must identify:
 
 **Static Dev Team — Original Creator**
 
-**Project Link/Repository:** [placeholder]
+**Project Link:** https://draagonplayz.itch.io/static-editor
 
 Attribution must not be removed, obscured, or falsely presented as credit for another creator.
 
